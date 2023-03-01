@@ -7,12 +7,18 @@ export function Select({
 }: FormFieldProps) {
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [selectedOption, setSelectedOption] = useState<ApiCurrency | string>("Select a currency");
+
+    const handleOptionClick = (code: string, name: string) => {
+        setSelectedOption(`${code} - ${name}`);
+        setDropdownOpen(!dropdownOpen)
+    }
 
     return (
         <div className="input-group">
             <label htmlFor={label}>{label}</label>
-            <div className="select"  id={label}>
-                <div className="trigger" onClick={e => setDropdownOpen(!dropdownOpen)}></div>
+            <div className="select"  id={label} onClick={e => setDropdownOpen(!dropdownOpen)}>
+                <div className="select-display">{`${selectedOption}`}</div>
                 {
                     dropdownOpen && (
                         <div className="dropdown" >
@@ -20,6 +26,7 @@ export function Select({
                                 <div
                                     className="option"
                                     key={c.ISOCurrencyCode}
+                                    onClick={() => handleOptionClick(c.ISOCurrencyCode, c.CurrencyEnglishName)}
                                 >
                                     {c.ISOCurrencyCode} - {c.CurrencyEnglishName}
                                 </div>

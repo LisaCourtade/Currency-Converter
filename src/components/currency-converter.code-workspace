@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../../react-typescript/my-app"
+		}
+	],
+	"settings": {}
+}

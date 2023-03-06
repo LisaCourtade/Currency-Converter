@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
+
 
 
 export function Select({
     label,
-    currencies
+    currencies,
+    onSelect
 }: FormFieldProps) {
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState<ApiCurrency | string>("Select a currency");
+    const [selectedOption, setSelectedOption] = useState<string>("Select a currency");
 
     const handleOptionClick = (code: string, name: string) => {
         setSelectedOption(`${code} - ${name}`);
-        setDropdownOpen(!dropdownOpen)
+        setDropdownOpen(!dropdownOpen);
+        onSelect(code, label);
     }
 
     return (
@@ -19,6 +24,9 @@ export function Select({
             <label htmlFor={label}>{label}</label>
             <div className="select"  id={label} onClick={e => setDropdownOpen(!dropdownOpen)}>
                 <div className="select-display">{`${selectedOption}`}</div>
+                <div>
+                    {(!dropdownOpen) ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleUp} />}
+                </div>
                 {
                     dropdownOpen && (
                         <div className="dropdown" >
@@ -44,6 +52,7 @@ export function Select({
 interface FormFieldProps {
     label: string;
     currencies: ApiCurrency[];
+    onSelect: Function;
 }
 
 export interface ApiCurrency {

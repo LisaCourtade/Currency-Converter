@@ -71,6 +71,12 @@ label {
 }
 
 .select {
+  width: 305px;
+  height: 44px;
+  position: relative;
+}
+
+.select-head {
   outline: none;
   border: 1px solid rgb(219, 219, 219);
   border-radius: 6px;
@@ -78,24 +84,35 @@ label {
   height: 44px;
   font-size: 1rem;
   color: rgb(20, 30, 55);
-  padding: 12px; 
+  padding: 2px; 
   background-color: white;
   display: flex;
   justify-content: space-between;
-  position: relative;
 }
 
-.select:hover {
+.select-head:hover {
   cursor: pointer;
-}
-
-.select:focus {
-  border:  1px solid rgb(18, 113, 255);
 }
 
 .select-display {
   width: 100%;
-  height: fit-content;
+  height: 40px;
+  font-size: 1rem;
+  padding: 8px;
+}
+
+.select-input {
+  outline: none;
+  box-shadow: none; 
+  border: none;
+  width: 100%;
+  height: 40px;
+  font-size: 1rem;
+  padding: 8px;
+}
+
+.select-button {
+  padding: 8px;
 }
 
 .dropdown {
@@ -104,7 +121,7 @@ label {
   left: 0;
   right: 0;
   overflow-y: auto;
-  height: 200px;
+  max-height: 200px;
   border: 1px solid rgb(219, 219, 219);
   border-radius: 6px;
   font-size: 1rem;
@@ -113,19 +130,20 @@ label {
 }
 
 .option {
-  padding: 2px 5px;
+  padding: 5px 5px;
 }
 
 .option:hover {
   background-color: rgb(205, 231, 254);
+  cursor: pointer;
 }
 
-.select-input {
-  outline: none;
-  box-shadow: none; 
-  border: none;
-  width: 100%;
-  font-size: 1rem;
+.no-option {
+  padding: 5px 5px;
+}
+
+.no-option:hover {
+  cursor: default;
 }
 
 .button {
@@ -170,11 +188,13 @@ p {
   color: rgb(31, 45, 79);
 }
 
-
-
 .spinner {
   position: absolute;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.small-spinner {
+  color: black;
 }

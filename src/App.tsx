@@ -12,6 +12,7 @@ function App() {
   const [toCurrency, setToCurrency] = useState<string>('');
   const [conversionResult, setconversionResult] = useState<ApiResult>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [convLoading, setConvLoading] = useState<boolean>(false);
 
   useEffect(() => {
       fetch('https://api.cloudmersive.com/currency/exchange-rates/list-available', {
@@ -43,7 +44,6 @@ function App() {
   const handleConvertClick = (amount: string, fromCurrency: string, toCurrency: string) => {
     const from = fromCurrency;
     const to = toCurrency;
-    console.log(amount)
 
     if (amount === '0.00') {
       alert('Please enter a valid amount');
@@ -55,13 +55,16 @@ function App() {
       return;
     }
 
+    setConvLoading(true)
+
     fetch(`https://api.apilayer.com/exchangerates_data/convert?to=${to}&from=${from}&amount=${amount}`, {
       method: 'GET',
       headers: {
         apikey: process.env.REACT_APP_APILAYER_KEY as string,
       }
     }).then(res => res.json()).then(data => {
-      setconversionResult({amount, from, to, result: data.result, rate: data.info.rate})
+      setconversionResult({amount, from, to, result: data.result, rate: data.info.rate});
+      setConvLoading(false);
     })
   }
 
@@ -69,7 +72,7 @@ function App() {
   return (
     <div className="App">
       <div className="title">Currency Converter</div>
-      { isLoading ? <div className="spinner"><Spinner /></div> :
+      { isLoading ? <div className="spinner"><Spinner size={"80"} color={"#fdfdfd"}/></div> :
         <div className="card">
           <div className="input-container">
             <div className="input-group">
@@ -83,8 +86,9 @@ function App() {
             <Select currencies={currencies} label={"To"} onSelect={handleSelectChange} />
           </div>
           <div className="result-container">
+            {convLoading && <Spinner size={"40"} color={"#000000"} />}
             {
-              conversionResult && (
+              (conversionResult && !convLoading) && (
                 <div className="result">
                   <p className="conversion-from">{conversionResult.amount} {conversionResult.from} =</p>
                   <p className="conversion-result">{conversionResult.result} {conversionResult.to}</p>

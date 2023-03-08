@@ -41,24 +41,26 @@ export function Select({
         <div className="input-group">
             <label htmlFor={label}>{label}</label>
             <div className="select"  id={label}  >
-                {
-                    !dropdownOpen ? 
-                        <div className="select-display" onClick={() => setDropdownOpen(!dropdownOpen)}>{selectedOption}</div> 
-                        : 
-                        <input className="select-input" placeholder="Type to search"
-                            onChange={(e) => handleInputChange(e)}
-                            // onKeyDown={(e) => handleKeyboardEvent(e)}
-                        /> 
-                }
-                <div onClick={() => setDropdownOpen(!dropdownOpen)}>
-                    {(!dropdownOpen) ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleUp} />}
+                <div className="select-head" >
+                    {
+                        !dropdownOpen ? 
+                            <div className="select-display" onClick={() => setDropdownOpen(!dropdownOpen)}>{selectedOption}</div> 
+                            : 
+                            <input className="select-input" placeholder="Type to search"
+                                onChange={(e) => handleInputChange(e)}
+                                // onKeyDown={(e) => handleKeyboardEvent(e)}
+                            /> 
+                    }
+                    <div className="select-button" onClick={() => {setDropdownOpen(!dropdownOpen); setOptions(currencies)}} >
+                        {(!dropdownOpen) ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleUp} />}
+                    </div>
                 </div>
                 {
                     dropdownOpen && (
                         <div className="dropdown" >
                             {   
                                 options.length === 0 ?
-                                    <div className="option">No results available</div>
+                                    <div className="no-option">No results available</div>
                                     :
                                     options.map((c: ApiCurrency) => (
                                         <div

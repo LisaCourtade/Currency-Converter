@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 
@@ -12,6 +12,7 @@ export function Select({
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState<string>("Select a currency");
+    const [options, setOptions] = useState<ApiCurrency[]>(currencies);
 
     const handleOptionClick = (code: string, name: string) => {
         setSelectedOption(`${code} - ${name}`);
@@ -19,31 +20,59 @@ export function Select({
         onSelect(code, label);
     }
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const filteredOptions = currencies.filter(opt => 
+            opt.ISOCurrencyCode.toLowerCase().includes(e.target.value.toLowerCase()) || opt.CurrencyEnglishName.toLowerCase().includes(e.target.value.toLowerCase())
+        );
+        setOptions(filteredOptions);
+    }
+
+    // const handleKeyboardEvent = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    //     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    //         console.log('up or down')
+    //     }
+    // }
+
+    useEffect(() => {
+        setOptions(currencies);
+    }, [currencies])
+
     return (
         <div className="input-group">
             <label htmlFor={label}>{label}</label>
-            <div className="select"  id={label} onClick={e => setDropdownOpen(!dropdownOpen)}>
-                <div className="select-display">{`${selectedOption}`}</div>
-                <div>
+            <div className="select"  id={label}  >
+                {
+                    !dropdownOpen ? 
+                        <div className="select-display" onClick={() => setDropdownOpen(!dropdownOpen)}>{selectedOption}</div> 
+                        : 
+                        <input className="select-input" placeholder="Type to search"
+                            onChange={(e) => handleInputChange(e)}
+                            // onKeyDown={(e) => handleKeyboardEvent(e)}
+                        /> 
+                }
+                <div onClick={() => setDropdownOpen(!dropdownOpen)}>
                     {(!dropdownOpen) ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleUp} />}
                 </div>
                 {
                     dropdownOpen && (
                         <div className="dropdown" >
-                            { currencies.map((c: ApiCurrency) => (
-                                <div
-                                    className="option"
-                                    key={c.ISOCurrencyCode}
-                                    onClick={() => handleOptionClick(c.ISOCurrencyCode, c.CurrencyEnglishName)}
-                                >
-                                    {c.ISOCurrencyCode} - {c.CurrencyEnglishName}
-                                </div>
-                            ))}
+                            {   
+                                options.length === 0 ?
+                                    <div className="option">No results available</div>
+                                    :
+                                    options.map((c: ApiCurrency) => (
+                                        <div
+                                            className="option"
+                                            key={c.ISOCurrencyCode}
+                                            onClick={() => handleOptionClick(c.ISOCurrencyCode, c.CurrencyEnglishName)}
+                                        >
+                                            {c.ISOCurrencyCode} - {c.CurrencyEnglishName}
+                                        </div>
+                                    ))
+                            }
                         </div>
                     )
-                }
-
-                
+                }  
             </div>
         </div>
     )

@@ -55,7 +55,7 @@ label {
   color: rgb(20, 30, 55);
 }
 
-input {
+.amount-input {
   outline: none;
   box-shadow: none; 
   border: 1px solid rgb(219, 219, 219);
@@ -66,7 +66,7 @@ input {
   width: 305px;
 }
 
-input:focus {
+.amount-input:focus {
   border:  1px solid rgb(18, 113, 255);
 }
 
@@ -75,6 +75,7 @@ input:focus {
   border: 1px solid rgb(219, 219, 219);
   border-radius: 6px;
   width: 305px;
+  height: 44px;
   font-size: 1rem;
   color: rgb(20, 30, 55);
   padding: 12px; 
@@ -90,6 +91,11 @@ input:focus {
 
 .select:focus {
   border:  1px solid rgb(18, 113, 255);
+}
+
+.select-display {
+  width: 100%;
+  height: fit-content;
 }
 
 .dropdown {
@@ -112,6 +118,14 @@ input:focus {
 
 .option:hover {
   background-color: rgb(205, 231, 254);
+}
+
+.select-input {
+  outline: none;
+  box-shadow: none; 
+  border: none;
+  width: 100%;
+  font-size: 1rem;
 }
 
 .button {
@@ -156,3 +170,11 @@ p {
   color: rgb(31, 45, 79);
 }
 
+
+
+.spinner {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

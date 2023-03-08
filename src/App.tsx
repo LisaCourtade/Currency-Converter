@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import {Select, ApiCurrency} from './components/Select'
-
+import { Spinner } from './Spinner'
 
 
 function App() {
@@ -11,6 +11,7 @@ function App() {
   const [fromCurrency, setFromCurrency] = useState<string>('');
   const [toCurrency, setToCurrency] = useState<string>('');
   const [conversionResult, setconversionResult] = useState<ApiResult>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
       fetch('https://api.cloudmersive.com/currency/exchange-rates/list-available', {
@@ -19,7 +20,8 @@ function App() {
           apikey: process.env.REACT_APP_CLOUDMERSIVE_KEY as string,
       }
       }).then(res => res.json().then(data => {
-          setCurrencies(data.Currencies)
+          setCurrencies(data.Currencies);
+          setIsLoading(false);
       }));
   }, []);
 
@@ -67,31 +69,33 @@ function App() {
   return (
     <div className="App">
       <div className="title">Currency Converter</div>
-      <div className="card">
-        <div className="input-container">
-          <div className="input-group">
-            <label htmlFor="amount">Amount</label>
-            <input
-              type="number" id='amount' placeholder='1.00'
-              step='1.00' min="0.00" max="1000000000000000000"
-              onChange={(e) => handleInputChange(e)}/>
+      { isLoading ? <div className="spinner"><Spinner /></div> :
+        <div className="card">
+          <div className="input-container">
+            <div className="input-group">
+              <label htmlFor="amount">Amount</label>
+              <input className="amount-input"
+                type="number" id='amount' placeholder='1.00'
+                step='1.00' min="0.00" max="1000000000000000000"
+                onChange={(e) => handleInputChange(e)}/>
+            </div>
+            <Select currencies={currencies} label={"From"} onSelect={handleSelectChange} />
+            <Select currencies={currencies} label={"To"} onSelect={handleSelectChange} />
           </div>
-          <Select currencies={currencies} label={"From"} onSelect={handleSelectChange} />
-          <Select currencies={currencies} label={"To"} onSelect={handleSelectChange} />
+          <div className="result-container">
+            {
+              conversionResult && (
+                <div className="result">
+                  <p className="conversion-from">{conversionResult.amount} {conversionResult.from} =</p>
+                  <p className="conversion-result">{conversionResult.result} {conversionResult.to}</p>
+                  <p className="conversion-rate">1 {conversionResult.from} = {conversionResult.rate} {conversionResult.to}</p>
+                </div>
+              )              
+              }
+            <div className="button" onClick={() => handleConvertClick(amount, fromCurrency, toCurrency)}>Convert</div>
+          </div>
         </div>
-        <div className="result-container">
-          {
-            conversionResult && (
-              <div className="result">
-                <p className="conversion-from">{conversionResult.amount} {conversionResult.from} =</p>
-                <p className="conversion-result">{conversionResult.result} {conversionResult.to}</p>
-                <p className="conversion-rate">1 {conversionResult.from} = {conversionResult.rate} {conversionResult.to}</p>
-              </div>
-            )              
-            }
-          <div className="button" onClick={() => handleConvertClick(amount, fromCurrency, toCurrency)}>Convert</div>
-        </div>
-      </div>
+      }
     </div>
   );
 }

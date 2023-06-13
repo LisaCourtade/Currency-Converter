@@ -8,8 +8,8 @@ function App() {
     
   const [currencies, setCurrencies] = useState<ApiCurrency[]>([]);
   const [amount, setAmount] = useState<string>('1.00');
-  const [fromCurrency, setFromCurrency] = useState<string>('');
-  const [toCurrency, setToCurrency] = useState<string>('');
+  const [fromCurrency, setFromCurrency] = useState<CurrencySelect>();
+  const [toCurrency, setToCurrency] = useState<CurrencySelect>();
   const [conversionResult, setconversionResult] = useState<ApiResult>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [convLoading, setConvLoading] = useState<boolean>(false);
@@ -37,33 +37,35 @@ function App() {
     setAmount(value);
   }
 
-  const handleSelectChange = (currencyCode: string, label: string) => {
-    label === 'From' ? setFromCurrency(currencyCode) : setToCurrency(currencyCode);
+  const handleSelectChange = (currencyCode: string, name: string, label: string) => {
+    label === 'From' ? setFromCurrency({name, label, code: currencyCode}) : setToCurrency({name, label, code: currencyCode});
   }
   
-  const handleConvertClick = (amount: string, fromCurrency: string, toCurrency: string) => {
-    const from = fromCurrency;
-    const to = toCurrency;
+  const handleConvertClick = (amount: string, fromCurrency: CurrencySelect, toCurrency: CurrencySelect) => {
+    const fromCode = fromCurrency.code;
+    const toCode = toCurrency.code;
+    const fromName = fromCurrency.name;
+    const toName = toCurrency.name;
 
     if (amount === '0.00') {
       alert('Please enter a valid amount');
       return;
     }
 
-    if (from === "" || to === "") {
+    if (fromCode === "" || toCode === "") {
       alert('Please select a currency');
       return;
     }
 
     setConvLoading(true)
 
-    fetch(`https://api.apilayer.com/exchangerates_data/convert?to=${to}&from=${from}&amount=${amount}`, {
+    fetch(`https://api.apilayer.com/exchangerates_data/convert?to=${toCode}&from=${fromCode}&amount=${amount}`, {
       method: 'GET',
       headers: {
         apikey: process.env.REACT_APP_APILAYER_KEY as string,
       }
     }).then(res => res.json()).then(data => {
-      setconversionResult({amount, from, to, result: data.result, rate: data.info.rate});
+      setconversionResult({amount, fromCode, fromName, toCode, toName, result: data.result, rate: data.info.rate});
       setConvLoading(false);
     })
   }
@@ -72,7 +74,7 @@ function App() {
   return (
     <div className="App">
       <div className="title">Currency Converter</div>
-      { isLoading ? <div className="spinner"><Spinner size={"80"} color={"#fdfdfd"}/></div> :
+      { isLoading ? <div className="spinner"><Spinner size={"60"} color={"#fdfdfd"}/></div> :
         <div className="card">
           <div className="input-container">
             <div className="input-group">
@@ -90,13 +92,13 @@ function App() {
             {
               (conversionResult && !convLoading) && (
                 <div className="result">
-                  <p className="conversion-from">{conversionResult.amount} {conversionResult.from} =</p>
-                  <p className="conversion-result">{conversionResult.result} {conversionResult.to}</p>
-                  <p className="conversion-rate">1 {conversionResult.from} = {conversionResult.rate} {conversionResult.to}</p>
+                  <p className="conversion-from">{conversionResult.amount} {conversionResult.fromCode} =</p>
+                  <p className="conversion-result">{conversionResult.result} {conversionResult.toCode}</p>
+                  { conversionResult.amount !== '1.00' ? <p className="conversion-rate">1 {conversionResult.fromCode} = {conversionResult.rate} {conversionResult.toCode}</p> : ''}
                 </div>
               )              
               }
-            <div className="button" onClick={() => handleConvertClick(amount, fromCurrency, toCurrency)}>Convert</div>
+            <div className="button" onClick={() => handleConvertClick(amount, fromCurrency as CurrencySelect, toCurrency as CurrencySelect)}>Convert</div>
           </div>
         </div>
       }
@@ -106,11 +108,19 @@ function App() {
 
 interface ApiResult {
   amount: string;
-  from: string;
-  to: string;
+  fromCode: string;
+  fromName: string;
+  toCode: string;
+  toName: string;
   result: number;
   rate: number;
 }
 
+interface CurrencySelect {
+  name: string;
+  code: string;
+  label: string;
+}
 
 export default App;
+

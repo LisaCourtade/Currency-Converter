@@ -17,7 +17,7 @@ export function Select({
     const handleOptionClick = (code: string, name: string) => {
         setSelectedOption(`${code} - ${name}`);
         setDropdownOpen(!dropdownOpen);
-        onSelect(code, label);
+        onSelect(code, name, label);
     }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,12 +26,6 @@ export function Select({
         );
         setOptions(filteredOptions);
     }
-
-    // const handleKeyboardEvent = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    //     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-    //         console.log('up or down')
-    //     }
-    // }
 
     useEffect(() => {
         setOptions(currencies);
@@ -48,7 +42,6 @@ export function Select({
                             : 
                             <input className="select-input" placeholder="Type to search"
                                 onChange={(e) => handleInputChange(e)}
-                                // onKeyDown={(e) => handleKeyboardEvent(e)}
                             /> 
                     }
                     <div className="select-button" onClick={() => {setDropdownOpen(!dropdownOpen); setOptions(currencies)}} >

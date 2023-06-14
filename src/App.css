@@ -11,19 +11,21 @@ body {
   color: white;
   font-size: 2rem;
   font-weight: bold;
-  position: absolute;
-  top: 15%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 30vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
 }
 
 .card {
   width: 1150px;
-  height: 250px;
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  min-height: 250px;
   background-color: white;
   border-radius: 8px;
   display: flex;
@@ -38,14 +40,13 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 2px;
-  /* background-color: rgb(6, 49, 125); */
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
   padding: 4px;
-  /* background-color: rgb(35, 143, 205); */
+  width: 305px;
 }
 
 label {
@@ -63,7 +64,7 @@ label {
   padding: 12px; 
   font-size: 1rem;
   color: rgb(20, 30, 55);
-  width: 305px;
+  width: 100%;
 }
 
 .amount-input:focus {
@@ -71,7 +72,7 @@ label {
 }
 
 .select {
-  width: 305px;
+  width: 100%;
   height: 44px;
   position: relative;
 }
@@ -80,7 +81,7 @@ label {
   outline: none;
   border: 1px solid rgb(219, 219, 219);
   border-radius: 6px;
-  width: 305px;
+  width: 100%;
   height: 44px;
   font-size: 1rem;
   color: rgb(20, 30, 55);
@@ -197,4 +198,69 @@ p {
 
 .small-spinner {
   color: black;
+}
+
+
+@media (max-width: 1170px) {
+
+  .card {
+    width: 90%;
+    height: auto;
+  }
+
+  .input-group {
+    width: 270px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .title {
+    height: 15vh;
+  }
+
+  .card {
+    width: 90%;
+    height: auto;
+    padding-top: 1rem;
+  }
+
+  .input-container {
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .input-group {
+    width: 90%;
+    padding: 0.8rem;
+  }
+
+  #From .dropdown {
+    z-index: 1000;
+  }
+
+  .result-container {
+    padding: 1rem 2rem;
+  }
+
+}
+
+@media (max-width: 700px) {
+
+  .result-container {
+    padding: 1rem;
+    justify-content: center;
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+
+  .button {
+    width: 100%
+  }
+
+  .result {
+    margin-top: 1rem;
+  }
+
 }

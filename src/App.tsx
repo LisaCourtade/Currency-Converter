@@ -74,34 +74,38 @@ function App() {
   return (
     <div className="App">
       <div className="title">Currency Converter</div>
-      { isLoading ? <div className="spinner"><Spinner size={"60"} color={"#fdfdfd"}/></div> :
-        <div className="card">
-          <div className="input-container">
-            <div className="input-group">
-              <label htmlFor="amount">Amount</label>
-              <input className="amount-input"
-                type="number" id='amount' placeholder='1.00'
-                step='1.00' min="0.00" max="1000000000000000000"
-                onChange={(e) => handleInputChange(e)}/>
+      <div className="main">
+        { isLoading ? <div className="spinner"><Spinner size={"60"} color={"#fdfdfd"}/></div> :
+          <div className="card">
+            <div className="input-container">
+              <div className="input-group">
+                <label htmlFor="amount">Amount</label>
+                <input className="amount-input"
+                  type="number" id='amount' placeholder='1.00'
+                  step='1.00' min="0.00" max="1000000000000000000"
+                  onChange={(e) => handleInputChange(e)}/>
+              </div>
+              <Select currencies={currencies} label={"From"} onSelect={handleSelectChange} />
+              <Select currencies={currencies} label={"To"} onSelect={handleSelectChange} />
             </div>
-            <Select currencies={currencies} label={"From"} onSelect={handleSelectChange} />
-            <Select currencies={currencies} label={"To"} onSelect={handleSelectChange} />
+            <div className="result-container">
+              <div className="result">
+                {convLoading && <Spinner size={"40"} color={"#000000"} />}
+                {
+                  (conversionResult && !convLoading) && (
+                    <div>
+                      <p className="conversion-from">{conversionResult.amount} {conversionResult.fromCode} =</p>
+                      <p className="conversion-result">{conversionResult.result} {conversionResult.toCode}</p>
+                      { conversionResult.amount !== '1.00' ? <p className="conversion-rate">1 {conversionResult.fromCode} = {conversionResult.rate} {conversionResult.toCode}</p> : ''}
+                    </div>
+                  )              
+                }
+              </div>
+              <div className="button" onClick={() => handleConvertClick(amount, fromCurrency as CurrencySelect, toCurrency as CurrencySelect)}>Convert</div>
+            </div>
           </div>
-          <div className="result-container">
-            {convLoading && <Spinner size={"40"} color={"#000000"} />}
-            {
-              (conversionResult && !convLoading) && (
-                <div className="result">
-                  <p className="conversion-from">{conversionResult.amount} {conversionResult.fromCode} =</p>
-                  <p className="conversion-result">{conversionResult.result} {conversionResult.toCode}</p>
-                  { conversionResult.amount !== '1.00' ? <p className="conversion-rate">1 {conversionResult.fromCode} = {conversionResult.rate} {conversionResult.toCode}</p> : ''}
-                </div>
-              )              
-              }
-            <div className="button" onClick={() => handleConvertClick(amount, fromCurrency as CurrencySelect, toCurrency as CurrencySelect)}>Convert</div>
-          </div>
-        </div>
-      }
+        }
+      </div>
     </div>
   );
 }

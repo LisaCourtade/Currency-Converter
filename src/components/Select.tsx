@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 
@@ -13,6 +13,8 @@ export function Select({
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState<string>("Select a currency");
     const [options, setOptions] = useState<ApiCurrency[]>(currencies);
+    const selectRef = useRef<HTMLDivElement>(null);
+
 
     const handleOptionClick = (code: string, name: string) => {
         setSelectedOption(`${code} - ${name}`);
@@ -31,10 +33,24 @@ export function Select({
         setOptions(currencies);
     }, [currencies])
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+          if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
+              setDropdownOpen(false);
+          }
+        };
+
+        document.addEventListener('click', handleClickOutside, true);
+        
+        return () => {
+          document.removeEventListener('click', handleClickOutside, true);
+        };
+    }, []);
+    
     return (
-        <div className="input-group">
-            <label htmlFor={label}>{label}</label>
-            <div className="select"  id={label}  >
+        <div className="input-group" ref={selectRef}>
+            <div className="label">{label}</div>
+            <div className="select"  id={label}>
                 <div className="select-head" >
                     {
                         !dropdownOpen ? 
@@ -50,7 +66,7 @@ export function Select({
                 </div>
                 {
                     dropdownOpen && (
-                        <div className="dropdown" >
+                        <div className="dropdown">
                             {   
                                 options.length === 0 ?
                                     <div className="no-option">No results available</div>

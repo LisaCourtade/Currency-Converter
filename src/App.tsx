@@ -13,6 +13,8 @@ function App() {
   const [conversionResult, setconversionResult] = useState<ApiResult>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [convLoading, setConvLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   useEffect(() => {
       fetch('https://api.cloudmersive.com/currency/exchange-rates/list-available', {
@@ -28,7 +30,7 @@ function App() {
 
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
+    setIsError(false);
     if (event.target.value === '' || Number.isNaN(parseFloat(event.target.value))) {
       setAmount('1.00');
       return;
@@ -38,24 +40,28 @@ function App() {
   }
 
   const handleSelectChange = (currencyCode: string, name: string, label: string) => {
+    setIsError(false);
     label === 'From' ? setFromCurrency({name, label, code: currencyCode}) : setToCurrency({name, label, code: currencyCode});
   }
   
   const handleConvertClick = (amount: string, fromCurrency: CurrencySelect, toCurrency: CurrencySelect) => {
+    setIsError(false);
+    if (!fromCurrency || !toCurrency) {
+      setIsError(true)
+      setErrorMessage('Please select a currency');
+      return;
+    }
+
+    if (amount === '0.00') {
+      setIsError(true)
+      setErrorMessage('Please enter a valid amount');
+      return;
+    }
+    
     const fromCode = fromCurrency.code;
     const toCode = toCurrency.code;
     const fromName = fromCurrency.name;
     const toName = toCurrency.name;
-
-    if (amount === '0.00') {
-      alert('Please enter a valid amount');
-      return;
-    }
-
-    if (fromCode === "" || toCode === "") {
-      alert('Please select a currency');
-      return;
-    }
 
     setConvLoading(true)
 
@@ -90,7 +96,6 @@ function App() {
             </div>
             <div className="result-container">
               <div className="result">
-                {convLoading && <Spinner size={"40"} color={"#000000"} />}
                 {
                   (conversionResult && !convLoading) && (
                     <div>
@@ -101,7 +106,15 @@ function App() {
                   )              
                 }
               </div>
-              <div className="button" onClick={() => handleConvertClick(amount, fromCurrency as CurrencySelect, toCurrency as CurrencySelect)}>Convert</div>
+              { isError && <div><p className="error">{errorMessage}</p></div>}
+              <div className="spinner-button">
+              {
+                convLoading ?
+                  <Spinner size={"40"} color={"#0c076d"} />
+                  :
+                  <div className="button" onClick={() => handleConvertClick(amount, fromCurrency as CurrencySelect, toCurrency as CurrencySelect)}>Convert</div>
+              }
+              </div>
             </div>
           </div>
         }
